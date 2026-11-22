@@ -1,0 +1,82 @@
+flowchart TD
+    %% Styling Global
+    classDef headerStyle fill:#1E293B,stroke:#0F172A,stroke-width:2px,color:#FFFFFF,font-weight:bold
+    classDef stageStyle fill:#F8FAFC,stroke:#94A3B8,stroke-width:2px,color:#0F172A,font-weight:bold
+    classDef subBoxColor fill:#FFFBEB,stroke:#F59E0B,stroke-width:1.5px,color:#78350F
+    classDef subBoxShape fill:#F0FDF4,stroke:#22C55E,stroke-width:1.5px,color:#14532D
+    classDef subBoxText fill:#F5F3FF,stroke:#8B5CF6,stroke-width:1.5px,color:#4C1D95
+    classDef processStyle fill:#FFFFFF,stroke:#CBD5E1,stroke-width:1px,color:#1E293B
+    classDef accentStyle fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1D4ED8,font-weight:bold
+
+    Title["ALUR TAHAPAN PENELITIAN KLASIFIKASI SAMPAH CITRA DIGITAL<br/>Ekstraksi Fitur Multidomain dan Algoritma K-Nearest Neighbor (KNN)"]:::headerStyle
+
+    Title --> S1
+
+    %% TAHAP 1
+    subgraph S1 ["Tahap 1: Akuisisi Dataset Sampah Citra Digital (2.395 Sampel)"]
+        direction TB
+        D_Class["5 Kategori Sampah Anorganik:<br/>• Botol Kaca (502)<br/>• Botol Plastik (483)<br/>• Kaleng Logam (411)<br/>• Kardus (404)<br/>• Kertas (595)"]:::processStyle
+        D_Split["Pembagian Data Terstratifikasi (Stratified Sampling):<br/>• 80% Data Latih (1.915 Citra)<br/>• 20% Data Uji (480 Citra)"]:::processStyle
+        D_Class --> D_Split
+    end
+
+    S1 --> S2
+
+    %% TAHAP 2
+    subgraph S2 ["Tahap 2: Pra-Pemrosesan Citra dan Segmentasi Adaptif"]
+        direction TB
+        P_Resize["1. Penyeragaman Ukuran Spasial:<br/>Resize Bilinear ke Dimensi 256×256 Piksel"]:::processStyle
+        P_Blur["2. Reduksi Derau (Noise Filtering):<br/>Konvolusi Gaussian Blur (Kernel 5×5, σ=0)"]:::processStyle
+        P_Otsu["3. Binerisasi Otsu & Koreksi Orientasi Latar Belakang:<br/>Otsu Thresholding Grayscale + fix_mask_orientation()"]:::processStyle
+        P_Morph["4. Rekonstruksi Morfologi Kontur:<br/>Operasi Closing & Opening (5×5) -> Ekstraksi Masker ROI Kontur Terbesar"]:::processStyle
+
+        P_Resize --> P_Blur --> P_Otsu --> P_Morph
+    end
+
+    S2 --> S3
+
+    %% TAHAP 3
+    subgraph S3 ["Tahap 3: Ekstraksi Fitur Multidomain (Total 49 Dimensi)"]
+        direction TB
+
+        subgraph F_Color ["1. Fitur Warna Objek (38 Dimensi)"]
+            FC1["Kuantisasi Histogram HSV (32 Fitur):<br/>• 16 bin Hue, 8 bin Saturation, 8 bin Value<br/>• Dihitung khusus pada piksel masker objek"]:::subBoxColor
+            FC2["Momen Ruang Warna CIE-LAB (6 Fitur):<br/>• Rata-rata (Mean) L*, a*, b*<br/>• Standar Deviasi (Std) L*, a*, b*"]:::subBoxColor
+            FC1 --- FC2
+        end
+
+        subgraph F_Shape ["2. Morfometri Bentuk (5 Dimensi)"]
+            FS1["Deskriptor Kontur Geometri:<br/>• Normalized Area (Luas / 256²)<br/>• Normalized Perimeter (Keliling / 256)<br/>• Circularity (Kebundaran = 4πA / P²)<br/>• Aspect Ratio (Lebar / Tinggi)<br/>• Solidity (Luas / Convex Hull)"]:::subBoxShape
+        end
+
+        subgraph F_Texture ["3. Tekstur GLCM & Edge (6 Dimensi)"]
+            FT1["Haralick GLCM (5 Fitur):<br/>• Jarak d ∈ {1,2}, Sudut θ ∈ {0°, 90°}<br/>• Kontras, Disimilaritas, Homogenitas, Energi, Korelasi"]:::subBoxText
+            FT2["Kerapatan Tepi Canny (1 Fitur):<br/>• Ambang 40/120, Rasio Piksel Tepi Objek"]:::subBoxText
+            FT1 --- FT2
+        end
+    end
+
+    F_Color --> S4_Merge
+    F_Shape --> S4_Merge
+    F_Texture --> S4_Merge
+
+    %% TAHAP 4
+    subgraph S4 ["Tahap 4: Penskalaan Fitur dan Klasifikasi K-Nearest Neighbor"]
+        direction TB
+        S4_Merge["Penggabungan Vektor Fitur Terpadu:<br/>Vektor Numerik 1 × 49 Dimensi per Sampel"]:::processStyle
+        S4_Scale["Standardisasi Skor Baku (StandardScaler):<br/>Transformasi z = (x - μ) / σ (scaler.pkl)"]:::processStyle
+        S4_KNN["Klasifikasi K-Nearest Neighbor (KNN):<br/>• Jumlah Ketetanggaan: k = 5 Tetangga Terdekat<br/>• Metrik Jarak: Manhattan L1-Norm<br/>• Pembobotan: Distance-Weighted Voting (w = 1 / d)<br/>• Serialisasi Model: knn_model.pkl"]:::accentStyle
+
+        S4_Merge --> S4_Scale --> S4_KNN
+    end
+
+    S4 --> S5
+
+    %% TAHAP 5
+    subgraph S5 ["Tahap 5: Evaluasi Hasil dan Integrasi Sistem (Deployment)"]
+        direction TB
+        E_Metrics["Evaluasi Kuantitatif Data Uji (480 Sampel):<br/>• Akurasi Keseluruhan: 91,67%<br/>• F1-Score Tertinggi: Botol Kaca (94,12%) & Kardus (92,77%)<br/>• Rata-rata Waktu Inferensi: 57,3 ms per citra (~17 FPS)"]:::processStyle
+        E_Deploy["Implementasi Antarmuka Sistem:<br/>• Dashboard Web Interaktif (Streamlit app.py)<br/>• Pemindaian Video Kamera Langsung (OpenCV Real-Time)"]:::processStyle
+
+        E_Metrics --> E_Deploy
+    end

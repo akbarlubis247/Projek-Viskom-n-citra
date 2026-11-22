@@ -2,6 +2,9 @@ opencv-python
 numpy
 scikit-learn
 scikit-image
+onnxruntime
 joblib
-streamlit
+fastapi
+uvicorn
+python-multipart
 matplotlib

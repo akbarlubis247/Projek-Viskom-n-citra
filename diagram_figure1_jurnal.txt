@@ -1,0 +1,39 @@
+%% =========================================================================
+%% OPSI 1: FORMAT VERTIKAL STANDAR JURNAL (TOP-DOWN) - SANGAT DIREKOMENDASIKAN
+%% Tata letak rapi, simetris, dan langsung pas di 1 kolom kertas A4
+%% =========================================================================
+
+flowchart TD
+    Start([Mulai]) --> Input[/Input Citra Sampah Digital<br/>5 Kategori Material/]
+    Input --> Preproc[Pra-Pemrosesan Citra<br/>Resize 256×256 & Gaussian Blur 5×5]
+    Preproc --> Seg[Segmentasi Objek Adaptif<br/>Otsu Thresholding & Morfologi Closing]
+    
+    Seg --> Feat[Ekstraksi Fitur Multidomain]
+    
+    Feat --> F_Warna[Fitur Warna<br/>• 32-bin Histogram HSV<br/>• 6 Momen Statistik LAB]
+    Feat --> F_Bentuk[Fitur Bentuk Morfometri<br/>• Area & Perimeter Normalisasi<br/>• Circularity, Aspect Ratio, Solidity]
+    Feat --> F_Tekstur[Fitur Tekstur & Edge<br/>• 5 Parameter Haralick GLCM<br/>• 1 Kerapatan Tepi Canny]
+    
+    F_Warna --> Concat[Penggabungan Vektor Fitur<br/>Matriks 1 × 49 Dimensi]
+    F_Bentuk --> Concat
+    F_Tekstur --> Concat
+    
+    Concat --> Scale[Penskalaan Data<br/>StandardScaler: z = x - μ / σ]
+    Scale --> KNN[Klasifikasi K-Nearest Neighbor<br/>k = 5, Jarak Manhattan, Distance-Weighted]
+    KNN --> Output[/Hasil Klasifikasi Sampah:<br/>Botol Kaca / Plastik / Kaleng / Kardus / Kertas/]
+    Output --> Finish([Selesai])
+
+    %% Styling Warna Bersih Standar Jurnal
+    style Start fill:#E2E8F0,stroke:#475569,stroke-width:1.5px,color:#0F172A
+    style Finish fill:#E2E8F0,stroke:#475569,stroke-width:1.5px,color:#0F172A
+    style Input fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A8A
+    style Output fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A8A
+    style Preproc fill:#FFFFFF,stroke:#64748B,stroke-width:1.5px,color:#0F172A
+    style Seg fill:#FFFFFF,stroke:#64748B,stroke-width:1.5px,color:#0F172A
+    style Feat fill:#F1F5F9,stroke:#475569,stroke-width:1.5px,color:#0F172A,font-weight:bold
+    style F_Warna fill:#FFFBEB,stroke:#F59E0B,stroke-width:1.5px,color:#78350F
+    style F_Bentuk fill:#F0FDF4,stroke:#22C55E,stroke-width:1.5px,color:#14532D
+    style F_Tekstur fill:#F5F3FF,stroke:#8B5CF6,stroke-width:1.5px,color:#4C1D95
+    style Concat fill:#F8FAFC,stroke:#64748B,stroke-width:1.5px,color:#0F172A
+    style Scale fill:#FFFFFF,stroke:#64748B,stroke-width:1.5px,color:#0F172A
+    style KNN fill:#EEF2FF,stroke:#6366F1,stroke-width:1.8px,color:#312E81,font-weight:bold

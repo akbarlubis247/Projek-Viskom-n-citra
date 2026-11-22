@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="paper">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VISKOM LAB — Workstation Analisis Citra &amp; Klasifikasi Sampah KNN</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css?v=5" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- MOBILE SIDEBAR BACKDROP -->
+    <div class="sidebar-backdrop hidden" id="sidebar-backdrop"></div>
+
+    <!-- REFINED DEEP-NAVY SIDEBAR NAVIGATION -->
+    <aside class="sidebar" id="app-sidebar" aria-label="Navigasi Utama Laboratorium">
+      <div class="sidebar-brand">
+        <div class="brand-emblem" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="3"/>
+            <circle cx="12" cy="12" r="4"/>
+            <line x1="12" y1="3" x2="12" y2="6"/>
+            <line x1="12" y1="18" x2="12" y2="21"/>
+            <line x1="3" y1="12" x2="6" y2="12"/>
+            <line x1="18" y1="12" x2="21" y2="12"/>
+          </svg>
+        </div>
+        <div class="brand-copy">
+          <span class="brand-name">VISKOM LAB</span>
+          <span class="brand-sub">CV &amp; KNN Workbench</span>
+        </div>
+        <button type="button" class="sidebar-close-btn" id="btn-close-sidebar" aria-label="Tutup menu">&times;</button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-group-label">Workstation</div>
+        <a href="#sec-hero" class="nav-link active" data-nav="sec-hero">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="#sec-input" class="nav-link" data-nav="sec-input">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span>Image Analysis</span>
+        </a>
+        <a href="#sec-pipeline" class="nav-link" data-nav="sec-pipeline">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <span>Processing Pipeline</span>
+        </a>
+        <button type="button" class="nav-link nav-action" id="nav-trigger-camera">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          <span>Live Camera</span>
+        </button>
+
+        <div class="nav-group-label">Data &amp; Inspeksi</div>
+        <a href="#sec-classification" class="nav-link" data-nav="sec-classification">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          <span>Hasil KNN</span>
+        </a>
+        <a href="#sec-features" class="nav-link" data-nav="sec-features">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          <span>Feature Explorer</span>
+        </a>
+        <button type="button" class="nav-link nav-action" id="nav-trigger-roi">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"/>
+            <path d="M1 6.13L16 6a2 2 0 0 1 2 2v15"/>
+          </svg>
+          <span>ROI Lab</span>
+        </button>
+
+        <div class="nav-group-label">Dokumentasi</div>
+        <a href="#sec-about" class="nav-link" data-nav="sec-about">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span>Tentang Projek</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="lab-identity-box">
+          <div class="lab-id-badge">LAB // CV-05</div>
+          <div class="lab-id-title">Visual Komputer Cerdas</div>
+          <div class="lab-id-meta">Pengolahan Citra Digital &amp; Klasifikasi KNN</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT COLUMN -->
+    <div class="app-main">
+      <!-- COMPACT TOP HEADER -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button type="button" class="mobile-menu-btn" id="btn-open-sidebar" aria-label="Buka navigasi">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <div class="header-crumb">
+            <span class="crumb-code">VISKOM // LAB-05</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-title">Inspeksi Citra Digital &amp; Klasifikasi Sampah</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="header-metric">
+            <span class="hm-label">MODEL</span>
+            <span class="hm-val" id="hdr-model-spec">KNN (k=7 · Cosine)</span>
+          </div>
+          <div class="header-metric">
+            <span class="hm-label">RUANG FITUR</span>
+            <span class="hm-val" id="hdr-dataset-spec">2.395 Sampel</span>
+          </div>
+          <span class="status-indicator" id="pipeline-status">Siap</span>
+          <button type="button" class="theme-toggle" id="btn-theme-toggle" title="Ganti Tema Terang / Ruang Gelap Optik">
+            <span class="theme-dot"></span>
+            <span id="theme-label">Mode Kamar Gelap</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- PAGE CONTAINER -->
+      <div class="page-wrap">
+        <!-- COMPACT HERO BANNER -->
+        <section class="hero-band" id="sec-hero">
+          <div class="hero-content">
+            <div class="hero-eyebrow">
+              <span class="eyebrow-dot"></span>
+              <span>LABORATORIUM VISI KOMPUTER &amp; PENGOLAHAN CITRA DIGITAL</span>
+            </div>
+            <h1 class="hero-title">Sistem Klasifikasi Citra Sampah Berbasis Ekstraksi Fitur &amp; KNN</h1>
+            <p class="hero-desc">
+              Analisis citra digital terstruktur dari tahap segmentasi Otsu &amp; isolasi ROI, ekstraksi vektor 49 fitur multi-domain
+              (HSV, CIE-LAB, Morfologi Kontur, GLCM, Canny) hingga inferensi K-Nearest Neighbor secara transparan.
+            </p>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat-item">
+              <span class="hs-label">KATEGORI</span>
+              <strong class="hs-val">5 Kelas</strong>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hs-label">FITUR EKSPLORER</span>
+              <strong class="hs-val">49 Dimensi</strong>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hs-label">LATENSI TERAKHIR</span>
+              <strong class="hs-val" id="hero-proc-time">-- ms</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 01: SPLIT IMAGE INPUT WORKSPACE -->
+        <section class="workspace-section" id="sec-input">
+          <div class="section-heading-row">
+            <div>
+              <span class="section-tag">01 // SUMBER CITRA &amp; AKUISISI</span>
+              <h2 class="section-title">Ruang Masukan Citra Sampah</h2>
+            </div>
+            <div class="section-actions-inline">
+              <label for="file-upload" class="btn-primary-action" id="dropzone-label">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>Unggah Foto Sampah</span>
+                <input type="file" id="file-upload" accept="image/jpeg,image/png,image/webp,image/bmp" hidden />
+              </label>
+
+              <button type="button" class="btn-secondary-action" id="btn-open-camera">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+                <span id="btn-camera-label">Kamera Langsung (Auto-Deteksi)</span>
+              </button>
+
+              <button type="button" class="btn-secondary-action" id="btn-open-crop" title="Beri bingkai fokus &amp; crop area objek sampah pada foto saat ini">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"/>
+                  <path d="M1 6.13L16 6a2 2 0 0 1 2 2v15"/>
+                </svg>
+                <span>Atur Bingkai Foto</span>
+              </button>
+
+              <button type="button" class="btn-secondary-action" id="btn-random-dataset" title="Ambil 1 foto acak dari 2.395 foto di folder dataset/">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 3 21 3 21 8"/>
+                  <line x1="4" y1="20" x2="21" y2="3"/>
+                  <polyline points="21 16 21 21 16 21"/>
+                  <line x1="15" y1="15" x2="21" y2="21"/>
+                  <line x1="4" y1="4" x2="9" y2="9"/>
+                </svg>
+                <span>Uji Acak Dataset</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="input-split-grid">
+            <!-- Left: Active Image Preview + Drag-Drop Cue + Technical Telemetry -->
+            <div class="input-preview-pane" id="input-drop-area">
+              <div class="input-preview-stage">
+                <img id="input-preview-img" alt="Pratinjau citra input aktif" />
+                <div class="preview-drop-hint">Seret &amp; lepas file gambar di sini untuk menganalisis</div>
+              </div>
+              <div class="telemetry-strip">
+                <div class="tele-item">
+                  <span class="tele-key">BERKAS AKTIF</span>
+                  <span class="tele-val" id="tele-source">-</span>
+                </div>
+                <div class="tele-item">
+                  <span class="tele-key">RESOLUSI</span>
+                  <span class="tele-val" id="tele-res">-</span>
+                </div>
+                <div class="tele-item">
+                  <span class="tele-key">BOUNDING BOX</span>
+                  <span class="tele-val" id="tele-bbox">-</span>
+                </div>
+                <div class="tele-item">
+                  <span class="tele-key">CAKUPAN ROI</span>
+                  <span class="tele-val" id="tele-coverage">-</span>
+                </div>
+                <div class="tele-item">
+                  <span class="tele-key">WAKTU</span>
+                  <span class="tele-val" id="tele-time">-</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Quick Real Sample Selection Tray -->
+            <div class="input-samples-pane">
+              <div class="samples-pane-head">
+                <span class="samples-label">UJI CEPAT SAMPEL NYATA</span>
+                <span class="samples-sub">Klik salah satu foto uji untuk langsung menjalankan pipeline</span>
+              </div>
+              <div class="sample-tray" id="sample-tray">
+                <!-- Populated dynamically from /api/info -->
+              </div>
+              <div class="input-tips-strip">
+                <span class="tip-badge">TIP</span>
+                <span>Gunakan <strong>Kamera Langsung</strong> untuk deteksi otomatis tanpa perlu jepret, atau klik <strong>Atur Bingkai Foto</strong> jika objek terlalu kecil pada foto unggahan.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- IMMERSIVE DARK LIVE CAMERA WORKSPACE (Shown inline when camera is active) -->
+        <section class="live-camera-deck hidden" id="live-camera-deck" aria-label="Ruang Kamera Langsung">
+          <div class="live-deck-bar">
+            <div class="live-deck-title">
+              <span class="live-rec-dot" id="live-rec-dot"></span>
+              <span>LIVE CAMERA WORKSPACE · TUNJUKKAN OBJEK KE BINGKAI FOKUS</span>
+            </div>
+            <div class="live-deck-right">
+              <span class="live-latency-pill" id="vf-latency">LIVE: -- ms</span>
+              <button type="button" class="btn-dark-ctrl" id="btn-freeze-live">Bekukan Data</button>
+              <button type="button" class="btn-dark-ctrl btn-dark-danger" id="btn-close-camera">Matikan Kamera</button>
+            </div>
+          </div>
+
+          <div class="vf-stage vf-stage-inline" id="vf-stage">
+            <video id="camera-video" autoplay playsinline muted></video>
+            <canvas id="camera-canvas" hidden></canvas>
+
+            <div class="vf-overlay" id="vf-overlay">
+              <div class="vf-shade" id="vf-shade-top"></div>
+              <div class="vf-shade" id="vf-shade-bottom"></div>
+              <div class="vf-shade" id="vf-shade-left"></div>
+              <div class="vf-shade" id="vf-shade-right"></div>
+
+              <div class="vf-frame" id="vf-frame">
+                <div class="vf-hud-top" id="vf-hud-top">
+                  <span class="vf-pulse-dot"></span>
+                  <span class="vf-hud-code" id="vf-hud-code">AUTO</span>
+                  <span class="vf-hud-label" id="vf-hud-label">Tunjukkan objek sampah...</span>
+                  <span class="vf-hud-conf" id="vf-hud-conf">--%</span>
+                </div>
+
+                <span class="vf-corner tl"></span>
+                <span class="vf-corner tr"></span>
+                <span class="vf-corner bl"></span>
+                <span class="vf-corner br"></span>
+
+                <div class="vf-grid-h1"></div>
+                <div class="vf-grid-h2"></div>
+                <div class="vf-grid-v1"></div>
+                <div class="vf-grid-v2"></div>
+                <div class="vf-crosshair"></div>
+
+                <div class="vf-hud-bottom" id="vf-hud-bottom">
+                  Arahkan objek ke dalam bingkai — kelas &amp; seluruh data diperbarui otomatis
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="live-deck-controls">
+            <label class="live-inline-slider">
+              <span>Ukuran Bingkai: <strong id="vf-size-val">74%</strong></span>
+              <input type="range" id="vf-size-slider" min="45" max="92" value="74" />
+            </label>
+            <label class="vf-check-row">
+              <input type="checkbox" id="vf-crop-toggle" checked />
+              <span>Fokus Isi Bingkai (Auto-Crop ROI)</span>
+            </label>
+            <div class="live-inline-btns">
+              <button type="button" class="btn-dark-ctrl" id="btn-mirror-camera">Mirror: OFF</button>
+              <button type="button" class="btn-dark-ctrl" id="btn-switch-camera">Ganti Kamera</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- MAIN ASYMMETRIC WORKBENCH: PIPELINE (LEFT) + KNN RESULTS (RIGHT) -->
+        <main class="workbench">
+          <!-- LEFT COLUMN: 02 // IMAGE PROCESSING PIPELINE -->
+          <section class="panel panel-optical" id="sec-pipeline">
+            <div class="panel-header">
+              <div>
+                <span class="section-tag">02 // PIPELINE PEMROSESAN CITRA</span>
+                <h2 class="panel-title">Pra-Pemrosesan, Segmentasi &amp; Isolasi ROI</h2>
+              </div>
+              <div class="view-mode-switch" role="tablist">
+                <button type="button" class="view-btn active" data-view="single" id="btn-view-single">Fokus Per Tahap</button>
+                <button type="button" class="view-btn" data-view="grid" id="btn-view-grid">4 Tahap (2×2)</button>
+              </div>
+            </div>
+
+            <!-- PROMINENT SINGLE-STAGE STEPPER VIEW (Default Clean Focus) -->
+            <div class="optical-single-view" id="optical-single-view">
+              <div class="pipeline-stepper" role="tablist" aria-label="Tahapan Pemrosesan Citra">
+                <button type="button" class="stage-tab active" data-target="annotated">
+                  <span class="step-idx">01</span>
+                  <span class="step-lbl">Kontur &amp; Hull</span>
+                </button>
+                <button type="button" class="stage-tab" data-target="mask">
+                  <span class="step-idx">02</span>
+                  <span class="step-lbl">Otsu &amp; Morfologi</span>
+                </button>
+                <button type="button" class="stage-tab" data-target="isolated">
+                  <span class="step-idx">03</span>
+                  <span class="step-lbl">Isolasi ROI</span>
+                </button>
+                <button type="button" class="stage-tab" data-target="edges">
+                  <span class="step-idx">04</span>
+                  <span class="step-lbl">Tepi Canny</span>
+                </button>
+                <button type="button" class="stage-tab" data-target="original">
+                  <span class="step-idx">00</span>
+                  <span class="step-lbl">Input 256px</span>
+                </button>
+              </div>
+
+              <div class="single-stage-body">
+                <div class="single-canvas-frame">
+                  <img id="img-single-focus" alt="Tampilan Fokus Tahap Pemrosesan" />
+                </div>
+                <div class="single-stage-explain">
+                  <div class="explain-badge" id="single-stage-code">TAHAP 2.1 // DETEKSI GEOMETRI</div>
+                  <h3 id="single-stage-title">Deteksi Kontur Terbesar, Convex Hull &amp; Bounding Box</h3>
+                  <p id="single-stage-desc">
+                    Dari mask hasil operasi morfologi, sistem mencari kontur eksternal terbesar (<code>cv2.RETR_EXTERNAL</code>).
+                    Garis hijau menunjukkan batas kontur objek, garis jingga menunjukkan selubung cembung (<em>Convex Hull</em>),
+                    dan kotak putih menunjukkan <em>Bounding Box</em> untuk pemotongan ROI tekstur.
+                  </p>
+                  <div class="geometry-mini-grid">
+                    <div class="geom-stat">
+                      <span>Luas Kontur (A)</span>
+                      <strong id="geom-contour-px">-</strong>
+                    </div>
+                    <div class="geom-stat">
+                      <span>Luas Convex Hull</span>
+                      <strong id="geom-hull-px">-</strong>
+                    </div>
+                    <div class="geom-stat">
+                      <span>Keliling (Perimeter)</span>
+                      <strong id="geom-perim-px">-</strong>
+                    </div>
+                    <div class="geom-stat">
+                      <span>Koordinat BBox</span>
+                      <strong id="geom-bbox-xy">-</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2x2 QUAD VIEWPORT (Optional Comparison Mode) -->
+            <div class="optical-quad-grid hidden" id="optical-quad-view">
+              <article class="stage-card" data-stage="annotated">
+                <div class="stage-card-head">
+                  <span class="stage-num">TAHAP 01</span>
+                  <span class="stage-name">Kontur, Hull &amp; BBox</span>
+                  <span class="stage-dim">256×256</span>
+                </div>
+                <div class="stage-img-wrap">
+                  <img id="img-quad-annotated" alt="Tahap 1 Deteksi Kontur" />
+                </div>
+                <p class="stage-caption">
+                  <span class="legend-dot legend-green"></span>Kontur
+                  <span class="legend-dot legend-orange"></span>Convex Hull
+                  <span class="legend-dot legend-white"></span>BBox
+                </p>
+              </article>
+
+              <article class="stage-card" data-stage="mask">
+                <div class="stage-card-head">
+                  <span class="stage-num">TAHAP 02</span>
+                  <span class="stage-name">Binerisasi Otsu &amp; Morfologi</span>
+                  <span class="stage-dim">Biner 0/255</span>
+                </div>
+                <div class="stage-img-wrap">
+                  <img id="img-quad-mask" alt="Tahap 2 Mask Biner Otsu" />
+                </div>
+                <p class="stage-caption">Gaussian Blur (5×5) → Otsu + Koreksi Tepi → Morfologi Close &amp; Open.</p>
+              </article>
+
+              <article class="stage-card" data-stage="isolated">
+                <div class="stage-card-head">
+                  <span class="stage-num">TAHAP 03</span>
+                  <span class="stage-name">Isolasi Piksel Objek (ROI)</span>
+                  <span class="stage-dim">Bitwise Mask</span>
+                </div>
+                <div class="stage-img-wrap">
+                  <img id="img-quad-isolated" alt="Tahap 3 Objek Terisolasi" />
+                </div>
+                <p class="stage-caption">Latar belakang dieliminasi untuk ekstraksi warna HSV &amp; CIE-LAB murni pada objek.</p>
+              </article>
+
+              <article class="stage-card" data-stage="edges">
+                <div class="stage-card-head">
+                  <span class="stage-num">TAHAP 04</span>
+                  <span class="stage-name">Peta Tepi Canny &amp; Tekstur</span>
+                  <span class="stage-dim">128×128 ROI</span>
+                </div>
+                <div class="stage-img-wrap">
+                  <img id="img-quad-edges" alt="Tahap 4 Deteksi Tepi Canny" />
+                </div>
+                <p class="stage-caption">Crop Bounding Box → 128×128 → Deteksi tepi Canny (Threshold 40, 120).</p>
+              </article>
+            </div>
+          </section>
+
+          <!-- RIGHT COLUMN: 03 // CLASSIFICATION RESULTS & KNN TRANSPARENCY -->
+          <section class="panel panel-decision" id="sec-classification">
+            <div class="panel-header">
+              <div>
+                <span class="section-tag">03 // KEPUTUSAN K-NEAREST NEIGHBOR</span>
+                <h2 class="panel-title">Hasil Klasifikasi &amp; Tetangga Terdekat</h2>
+              </div>
+              <span class="code-badge" id="verdict-code">KNN-49D</span>
+            </div>
+
+            <!-- PRIMARY DARK NAVY VERDICT CARD -->
+            <div class="verdict-banner" id="verdict-banner">
+              <div class="verdict-top-row">
+                <span class="verdict-overline">KATEGORI SAMPAH TERDETEKSI</span>
+                <span class="verdict-status-pill">Terklasifikasi</span>
+              </div>
+              <div class="verdict-title-row">
+                <h3 class="verdict-class-name" id="verdict-label">Memuat...</h3>
+                <div class="verdict-confidence-box">
+                  <span class="conf-number" id="verdict-conf">0%</span>
+                  <span class="conf-caption">Bobot Voting KNN</span>
+                </div>
+              </div>
+              <div class="verdict-tags">
+                <span class="meta-tag" id="verdict-material">Material: -</span>
+                <span class="meta-tag" id="verdict-recycle">Status: -</span>
+              </div>
+              <p class="verdict-characteristic" id="verdict-desc">
+                Pilih sampel atau unggah foto sampah untuk melihat hasil ekstraksi fitur dan keputusan klasifikasi.
+              </p>
+            </div>
+
+            <!-- ONLINE DATASET TEACHING STRIP -->
+            <div class="dataset-teach-bar">
+              <div class="dataset-teach-head">
+                <span class="teach-title">SIMPAN KE DATASET &amp; PELAJARI LANGSUNG</span>
+                <span class="teach-hint" id="dataset-teach-source">Sumber: Foto Aktif</span>
+              </div>
+              <div class="dataset-teach-controls">
+                <select id="dataset-class-select" class="teach-select" aria-label="Pilih kelas dataset yang benar">
+                  <option value="botol_kaca">Botol Kaca (GLS-01)</option>
+                  <option value="botol_plastik">Botol Plastik (PET-02)</option>
+                  <option value="kaleng">Kaleng / Logam (ALU-03)</option>
+                  <option value="kardus">Kardus (CRD-04)</option>
+                  <option value="kertas">Kertas (PPR-05)</option>
+                </select>
+                <button type="button" class="btn-teach-save" id="btn-save-dataset">
+                  + Simpan ke Dataset
+                </button>
+              </div>
+              <div class="dataset-teach-feedback hidden" id="dataset-save-feedback"></div>
+            </div>
+
+            <!-- PROBABILITY DISTRIBUTION ACROSS 5 CLASSES -->
+            <div class="subpanel">
+              <div class="subpanel-head">
+                <h4 class="subpanel-title">Distribusi Probabilitas Kelas (Distance-Weighted Voting)</h4>
+                <span class="subpanel-note">Total 100%</span>
+              </div>
+              <div class="prob-list" id="prob-list">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- COMPACT NEAREST NEIGHBORS TABLE -->
+            <div class="subpanel">
+              <div class="subpanel-head">
+                <div>
+                  <h4 class="subpanel-title">Tetangga Terdekat KNN (Distance-Weighted)</h4>
+                  <p class="subpanel-desc">
+                    Jarak antar vektor fitur terstandarisasi menentukan bobot suara tiap tetangga (<code>w = 1/d</code>).
+                  </p>
+                </div>
+              </div>
+              <div class="neighbors-table-wrap">
+                <table class="neighbors-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Sampel Latih</th>
+                      <th>Kelas</th>
+                      <th>Jarak</th>
+                      <th>Bobot</th>
+                    </tr>
+                  </thead>
+                  <tbody id="neighbors-tbody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- SECTION 04: INTERACTIVE 49-D FEATURE EXPLORER -->
+        <section class="panel panel-features" id="sec-features">
+          <div class="panel-header panel-header-wrap">
+            <div>
+              <span class="section-tag">04 // FEATURE EXPLORER · 49 DIMENSI KLASIK</span>
+              <h2 class="panel-title">Eksplorasi Fitur Warna (HSV/LAB), Morfologi Kontur &amp; Tekstur GLCM</h2>
+            </div>
+            <div class="explorer-controls-right">
+              <div class="domain-selector" id="visual-domain-selector" role="tablist" aria-label="Filter Domain Fitur">
+                <button type="button" class="domain-pill active" data-domain="all">Semua Fitur</button>
+                <button type="button" class="domain-pill" data-domain="color">Warna</button>
+                <button type="button" class="domain-pill" data-domain="shape">Morfologi</button>
+                <button type="button" class="domain-pill" data-domain="texture">Tekstur</button>
+              </div>
+              <div class="feature-tabs" role="tablist">
+                <button type="button" class="feat-tab active" data-tab="visual">Visualisasi</button>
+                <button type="button" class="feat-tab" data-tab="matrix">Matriks 49-D</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 1: VISUAL BREAKDOWN OF THE 3 DOMAINS -->
+          <div class="features-triple-grid" id="feat-view-visual">
+            <!-- DOMAIN A: COLOR FEATURES (38 DIMENSI) -->
+            <div class="domain-box" data-domain-panel="color">
+              <div class="domain-box-head">
+                <div>
+                  <span class="domain-index">DOMAIN A · INDEKS [0..37]</span>
+                  <h3 class="domain-title">Spektrum Warna Objek (HSV &amp; CIE-LAB)</h3>
+                </div>
+                <span class="dim-pill">38 Fitur</span>
+              </div>
+
+              <div class="lab-swatch-card">
+                <div class="swatch-preview" id="lab-color-swatch"></div>
+                <div class="swatch-details">
+                  <div class="swatch-row">
+                    <span class="swatch-title">Rata-Rata Warna Objek (CIE-LAB)</span>
+                    <code class="swatch-hex" id="lab-hex-code">#------</code>
+                  </div>
+                  <div class="lab-channels-grid" id="lab-channels-grid"></div>
+                </div>
+              </div>
+
+              <div class="hist-block">
+                <div class="hist-head">
+                  <span>Histogram Hue (16 Bin · 0°–360°)</span>
+                  <code>f[0..15]</code>
+                </div>
+                <div class="hist-bars hue-bars" id="hist-hue-bars"></div>
+              </div>
+
+              <div class="hist-split-row">
+                <div class="hist-block">
+                  <div class="hist-head">
+                    <span>Saturation (8 Bin)</span>
+                    <code>f[16..23]</code>
+                  </div>
+                  <div class="hist-bars sat-bars" id="hist-sat-bars"></div>
+                </div>
+                <div class="hist-block">
+                  <div class="hist-head">
+                    <span>Value (8 Bin)</span>
+                    <code>f[24..31]</code>
+                  </div>
+                  <div class="hist-bars val-bars" id="hist-val-bars"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DOMAIN B: SHAPE & MORPHOLOGY FEATURES (5 DIMENSI) -->
+            <div class="domain-box" data-domain-panel="shape">
+              <div class="domain-box-head">
+                <div>
+                  <span class="domain-index">DOMAIN B · INDEKS [38..42]</span>
+                  <h3 class="domain-title">Geometri &amp; Morfologi Kontur</h3>
+                </div>
+                <span class="dim-pill">5 Fitur</span>
+              </div>
+              <p class="domain-intro">
+                Diekstrak dari kontur utama objek untuk membedakan geometri silindris botol/kaleng dari bentuk poligonal kertas dan kardus.
+              </p>
+              <div class="metric-cards-list" id="shape-metrics-list"></div>
+            </div>
+
+            <!-- DOMAIN C: TEXTURE GLCM & CANNY EDGE (6 DIMENSI) -->
+            <div class="domain-box" data-domain-panel="texture">
+              <div class="domain-box-head">
+                <div>
+                  <span class="domain-index">DOMAIN C · INDEKS [43..48]</span>
+                  <h3 class="domain-title">Tekstur GLCM &amp; Kerapatan Tepi Canny</h3>
+                </div>
+                <span class="dim-pill">6 Fitur</span>
+              </div>
+              <p class="domain-intro">
+                Gray-Level Co-occurrence Matrix (GLCM) jarak <code>d=[1,2]</code> sudut <code>0°, 90°</code> dan kerapatan tepi Canny pada ROI <code>128×128</code>.
+              </p>
+              <div class="metric-cards-list" id="texture-metrics-list"></div>
+            </div>
+          </div>
+
+          <!-- TAB 2: COMPLETE 49-D VECTOR MATRIX TABLE -->
+          <div class="vector-matrix-view hidden" id="feat-view-matrix">
+            <div class="matrix-toolbar">
+              <div class="matrix-filter-group">
+                <button type="button" class="filter-chip active" data-group="ALL">Semua (49)</button>
+                <button type="button" class="filter-chip" data-group="Warna HSV">Warna HSV (32)</button>
+                <button type="button" class="filter-chip" data-group="Warna CIE-LAB">Warna CIE-LAB (6)</button>
+                <button type="button" class="filter-chip" data-group="Morfologi Bentuk">Morfologi Bentuk (5)</button>
+                <button type="button" class="filter-chip" data-group="Tekstur & Tepi">Tekstur &amp; Tepi (6)</button>
+              </div>
+              <div class="matrix-actions">
+                <button type="button" class="btn-secondary-action" id="btn-copy-json">Salin Vektor JSON</button>
+                <button type="button" class="btn-secondary-action" id="btn-export-csv">Unduh CSV (49-D)</button>
+              </div>
+            </div>
+
+            <div class="matrix-table-scroll">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th>Indeks</th>
+                    <th>Kode Fitur</th>
+                    <th>Domain</th>
+                    <th>Deskripsi Fitur</th>
+                    <th>Nilai Mentah (Raw X)</th>
+                    <th>Z-Score</th>
+                    <th>Deviasi Z</th>
+                  </tr>
+                </thead>
+                <tbody id="matrix-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 05: EDITORIAL PROJECT INFORMATION -->
+        <section class="about-editorial" id="sec-about">
+          <div class="about-col">
+            <span class="section-tag">METODOLOGI LABORATORIUM</span>
+            <h3>Klasifikasi Sampah Berbasis Citra Digital</h3>
+            <p>
+              VISKOM LAB dirancang sebagai instrumen analisis terbuka untuk mengamati bagaimana citra mentah diolah menjadi representasi fitur numerik hingga menghasilkan keputusan klasifikasi sampah anorganik.
+            </p>
+          </div>
+          <div class="about-col">
+            <span class="section-tag">ARSITEKTUR PIPELINE</span>
+            <ul class="about-list">
+              <li><strong>Segmentasi &amp; ROI:</strong> Gaussian Blur 5×5, Ambang Otsu Adaptif, Morfologi Close/Open, dan Kontur Eksternal Terbesar.</li>
+              <li><strong>Fitur Multi-Domain:</strong> 49 Fitur Klasik (32 HSV, 6 CIE-LAB, 5 Morfologi, 6 GLCM/Canny) + Ekstraksi Fitur Semantik DINOv2.</li>
+              <li><strong>Klasifikasi:</strong> K-Nearest Neighbor (KNN) berbobot jarak dengan pembaruan dataset langsung.</li>
+            </ul>
+          </div>
+          <div class="about-col">
+            <span class="section-tag">LINGKUNGAN SISTEM</span>
+            <div class="about-meta-grid">
+              <div><span>Backend</span><strong>FastAPI · Python</strong></div>
+              <div><span>Pengolahan Citra</span><strong>OpenCV · Scikit-Image</strong></div>
+              <div><span>Pembelajaran Mesin</span><strong>Scikit-Learn · ONNX</strong></div>
+              <div><span>Kategori Target</span><strong>5 Jenis Sampah</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <div>VISKOM // LAB-05 — Projek Visual Komputer Cerdas &amp; Pengolahan Citra Digital</div>
+          <div>OpenCV · Scikit-Image (GLCM) · Scikit-Learn (KNN)</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANUAL FOCUS FRAME / CROP MODAL FOR UPLOADED OR CURRENT PHOTO -->
+  <div class="modal-backdrop hidden" id="crop-modal">
+    <div class="modal-box modal-wide">
+      <div class="modal-head">
+        <div class="modal-head-left">
+          <span class="section-tag">ROI LAB // BINGKAI FOKUS MANUAL</span>
+          <h3>Fokuskan Area Sampah &amp; Cek Prediksi Kelas</h3>
+        </div>
+        <button type="button" class="modal-close" id="btn-close-crop" aria-label="Tutup modal">&times;</button>
+      </div>
+
+      <div class="camera-workspace">
+        <div class="crop-stage" id="crop-stage">
+          <img id="crop-source-img" alt="Citra untuk dibingkai" />
+          <div class="crop-shade" id="crop-shade-top"></div>
+          <div class="crop-shade" id="crop-shade-bottom"></div>
+          <div class="crop-shade" id="crop-shade-left"></div>
+          <div class="crop-shade" id="crop-shade-right"></div>
+
+          <div class="vf-frame crop-draggable" id="crop-box" title="Geser bingkai fokus ke arah objek sampah">
+            <div class="vf-hud-top" id="crop-hud-top">
+              <span class="vf-hud-code" id="crop-hud-code">ROI</span>
+              <span class="vf-hud-label" id="crop-hud-label">Geser bingkai ke objek...</span>
+              <span class="vf-hud-conf" id="crop-hud-conf">--%</span>
+            </div>
+            <span class="vf-corner tl"></span>
+            <span class="vf-corner tr"></span>
+            <span class="vf-corner bl"></span>
+            <span class="vf-corner br"></span>
+            <div class="vf-crosshair"></div>
+          </div>
+          <canvas id="crop-canvas" hidden></canvas>
+        </div>
+
+        <aside class="vf-sidebar">
+          <div class="vf-side-block">
+            <div class="vf-side-label">PREDIKSI ISI BINGKAI SAAT INI</div>
+            <div class="vf-top3-list" id="crop-top3-list">
+              <div class="vf-empty-note">Geser atau ubah ukuran bingkai...</div>
+            </div>
+          </div>
+
+          <div class="vf-side-block">
+            <div class="vf-side-label">PRATINJAU MASK OTSU ISI BINGKAI</div>
+            <div class="vf-mask-row">
+              <img id="crop-mini-mask" class="vf-mini-mask" alt="Crop Otsu Mask" />
+              <div class="vf-mask-meta">
+                <div>Cakupan: <strong id="crop-coverage-val">--%</strong></div>
+                <p id="crop-guidance-text">Seret kotak bingkai tepat menutupi objek sampah agar latar luar tidak mengganggu.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="vf-side-block">
+            <div class="vf-side-label">ATUR UKURAN BINGKAI</div>
+            <label class="vf-slider-row">
+              <span>Lebar Bingkai: <strong id="crop-size-val">75%</strong></span>
+              <input type="range" id="crop-size-slider" min="30" max="100" value="75" />
+            </label>
+            <button type="button" class="btn-secondary-action" id="btn-reset-crop" style="width:100%; justify-content:center;">Pusatkan Ulang Bingkai</button>
+          </div>
+        </aside>
+      </div>
+
+      <div class="modal-foot modal-foot-split">
+        <span class="shortcut-hint">Seret (drag) bingkai di atas gambar untuk menggeser titik fokus objek.</span>
+        <div class="modal-foot-actions">
+          <button type="button" class="btn-secondary-action" id="btn-cancel-crop">Batal</button>
+          <button type="button" class="btn-primary-action" id="btn-apply-crop">Terapkan Bingkai &amp; Analisis Lengkap</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js?v=5"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+flowchart LR
+    Start([Mulai]) --> Input[/Input Citra Sampah<br/>5 Kategori Material/]
+    Input --> Preproc[Pra-Pemrosesan<br/>Resize 256×256<br/>Gaussian Blur 5×5]
+    Preproc --> Seg[Segmentasi Adaptif<br/>Otsu Thresholding<br/>Morfologi Closing]
+    
+    Seg --> Feat[Ekstraksi Fitur<br/>Multidomain]
+    
+    Feat --> F_Warna[Fitur Warna 38D<br/>• 32-bin Histogram HSV<br/>• 6 Momen CIE-LAB]
+    Feat --> F_Bentuk[Fitur Bentuk 5D<br/>• Area & Perimeter<br/>• Circularity, AR, Solidity]
+    Feat --> F_Tekstur[Fitur Tekstur 6D<br/>• 5 Haralick GLCM<br/>• Densitas Tepi Canny]
+    
+    F_Warna --> Concat[Penggabungan Fitur<br/>Vektor 1 × 49 Dimensi]
+    F_Bentuk --> Concat
+    F_Tekstur --> Concat
+    
+    Concat --> Scale[Penskalaan Data<br/>StandardScaler: z = x-μ/σ]
+    Scale --> KNN[Klasifikasi KNN<br/>k=5, Jarak Manhattan<br/>Distance-Weighted]
+    KNN --> Output[/Hasil Klasifikasi:<br/>Kaca / Plastik / Kaleng<br/>Kardus / Kertas/]
+    Output --> Finish([Selesai])
+
+    %% Styling Bersih
+    style Start fill:#E2E8F0,stroke:#475569,stroke-width:1.5px,color:#0F172A
+    style Finish fill:#E2E8F0,stroke:#475569,stroke-width:1.5px,color:#0F172A
+    style Input fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A8A
+    style Output fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A8A
+    style Preproc fill:#FFFFFF,stroke:#64748B,stroke-width:1.5px,color:#0F172A
+    style Seg fill:#FFFFFF,stroke:#64748B,stroke-width:1.5px,color:#0F172A
+    style Feat fill:#F1F5F9,stroke:#475569,stroke-width:1.5px,color:#0F172A,font-weight:bold
+    style F_Warna fill:#FFFBEB,stroke:#F59E0B,stroke-width:1.5px,color:#78350F
+    style F_Bentuk fill:#F0FDF4,stroke:#22C55E,stroke-width:1.5px,color:#14532D
+    style F_Tekstur fill:#F5F3FF,stroke:#8B5CF6,stroke-width:1.5px,color:#4C1D95
+    style Concat fill:#F8FAFC,stroke:#64748B,stroke-width:1.5px,color:#0F172A
+    style Scale fill:#FFFFFF,stroke:#64748B,stroke-width:1.5px,color:#0F172A
+    style KNN fill:#EEF2FF,stroke:#6366F1,stroke-width:1.8px,color:#312E81,font-weight:bold
