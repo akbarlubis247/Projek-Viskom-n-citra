@@ -211,11 +211,13 @@ function renderAnalysis(data) {
   document.getElementById("tele-coverage").textContent = `${data.mask_coverage_pct}% frame`;
   document.getElementById("tele-time").textContent = `${data.processing_time_ms} ms`;
 
-  // Sync compact hero latency & input preview image (UI only)
+  // Sync compact hero latency & preview images (UI only)
   const heroProc = document.getElementById("hero-proc-time");
   if (heroProc) heroProc.textContent = `${data.processing_time_ms} ms`;
   const inputPrev = document.getElementById("input-preview-img");
   if (inputPrev) inputPrev.src = data.stages.original;
+  const knnPrev = document.getElementById("knn-preview-img");
+  if (knnPrev) knnPrev.src = data.stages.annotated;
 
   // Quad images
   document.getElementById("img-quad-annotated").src = data.stages.annotated;
@@ -237,6 +239,8 @@ function renderAnalysis(data) {
   document.getElementById("verdict-code").textContent = pred.code;
   document.getElementById("verdict-label").textContent = pred.label;
   document.getElementById("verdict-conf").textContent = `${pred.confidence_pct.toFixed(1)}%`;
+  const confBar = document.getElementById("verdict-conf-bar");
+  if (confBar) confBar.style.width = `${Math.max(2, Math.min(100, pred.confidence_pct))}%`;
   document.getElementById("verdict-material").textContent = `Material: ${pred.material}`;
   document.getElementById("verdict-recycle").textContent = pred.recyclable;
   document.getElementById("verdict-desc").textContent = pred.characteristic;
@@ -737,6 +741,9 @@ function initUploadAndCamera() {
 
   video.addEventListener("loadedmetadata", layoutViewfinderBox);
 
+  window.addEventListener("beforeunload", closeCamera);
+  window.addEventListener("pagehide", closeCamera);
+
   btnOpenCamera.addEventListener("click", async () => {
     if (isLiveCameraOpen) {
       closeCamera();
@@ -763,7 +770,15 @@ function initUploadAndCamera() {
         liveLoopTimer = setTimeout(runLiveAutoAnalysisStep, 450);
       });
     } catch (err) {
-      alert("Tidak dapat mengakses kamera perangkat: " + err.message);
+      const msg = (err && err.message) ? err.message : String(err);
+      if (/in use|notreadable|could not start/i.test(msg)) {
+        alert(
+          "Kamera sedang dipakai aplikasi atau tab browser lain (Device in use).\n\n" +
+          "Tutup dulu tab Microsoft Edge / tab lain yang membuka 127.0.0.1:8000, atau aplikasi seperti Discord/WhatsApp/Zoom/Camera Windows, lalu klik Kamera Langsung lagi."
+        );
+      } else {
+        alert("Tidak dapat mengakses kamera perangkat: " + msg);
+      }
     }
   });
 
@@ -1158,6 +1173,7 @@ function initMatrixToolbar() {
 function initThemeToggle() {
   const btn = document.getElementById("btn-theme-toggle");
   const lbl = document.getElementById("theme-label");
+  if (!btn || !lbl) return;
   btn.addEventListener("click", () => {
     const html = document.documentElement;
     const next = html.getAttribute("data-theme") === "paper" ? "darkroom" : "paper";
@@ -1167,14 +1183,24 @@ function initThemeToggle() {
 }
 
 /* --------------------------------------------------------------------------
-   UI-ONLY ENHANCEMENTS (Sidebar Drawer, Nav Scroll, Visual Domain Filter)
+   UI-ONLY ENHANCEMENTS (Sidebar Drawer, Nav Scroll, 3-Tier Tabs, Toast)
    Preserves 100% of existing logic and event listeners.
    -------------------------------------------------------------------------- */
+function showUiToast(msg) {
+  const t = document.getElementById("ui-toast");
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(window._uiToastTimer);
+  window._uiToastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
 function initRedesignUI() {
   const sidebar = document.getElementById("app-sidebar");
   const backdrop = document.getElementById("sidebar-backdrop");
   const btnOpen = document.getElementById("btn-open-sidebar");
   const btnClose = document.getElementById("btn-close-sidebar");
+  const crumbActive = document.getElementById("header-crumb-active");
 
   function setSidebarOpen(open) {
     if (!sidebar || !backdrop) return;
@@ -1186,20 +1212,28 @@ function initRedesignUI() {
   if (btnClose) btnClose.addEventListener("click", () => setSidebarOpen(false));
   if (backdrop) backdrop.addEventListener("click", () => setSidebarOpen(false));
 
-  // Sidebar navigation active states & mobile auto-close
-  const navLinks = document.querySelectorAll(".sidebar-nav .nav-link[data-nav]");
-  navLinks.forEach((link) => {
+  // Sidebar navigation active states, breadcrumb update & mobile auto-close
+  const allNavItems = document.querySelectorAll(".sidebar-nav .nav-link");
+  function markNavActive(el) {
+    allNavItems.forEach((l) => l.classList.remove("active"));
+    if (el) {
+      el.classList.add("active");
+      if (crumbActive && el.dataset.label) crumbActive.textContent = el.dataset.label;
+    }
+  }
+
+  document.querySelectorAll(".sidebar-nav .nav-link[data-nav]").forEach((link) => {
     link.addEventListener("click", () => {
-      navLinks.forEach((l) => l.classList.remove("active"));
-      link.classList.add("active");
+      markNavActive(link);
       setSidebarOpen(false);
     });
   });
 
-  // Sidebar shortcuts directly invoking existing camera & ROI buttons
+  // Sidebar shortcuts directly invoking existing camera, ROI, and dataset panels
   const navCam = document.getElementById("nav-trigger-camera");
   if (navCam) {
     navCam.addEventListener("click", () => {
+      markNavActive(navCam);
       setSidebarOpen(false);
       const camBtn = document.getElementById("btn-open-camera");
       if (camBtn && !isLiveCameraOpen) camBtn.click();
@@ -1211,13 +1245,45 @@ function initRedesignUI() {
   const navRoi = document.getElementById("nav-trigger-roi");
   if (navRoi) {
     navRoi.addEventListener("click", () => {
+      markNavActive(navRoi);
       setSidebarOpen(false);
       const cropBtn = document.getElementById("btn-open-crop");
       if (cropBtn) cropBtn.click();
     });
   }
 
-  // Visual Domain Selector inside Feature Explorer (All / Color / Morphology / Texture)
+  // Tier-3 KNN Tabs (Ringkasan | Tetangga Terdekat | Tambah ke Dataset)
+  const knnTabBtns = document.querySelectorAll("[data-knn-tab]");
+  const knnTabPanes = document.querySelectorAll("[data-knn-pane]");
+  function activateKnnTab(key) {
+    knnTabBtns.forEach((b) => b.classList.toggle("active", b.dataset.knnTab === key));
+    knnTabPanes.forEach((p) => p.classList.toggle("hidden", p.dataset.knnPane !== key));
+  }
+  knnTabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => activateKnnTab(btn.dataset.knnTab));
+  });
+
+  const navDataset = document.getElementById("nav-trigger-dataset");
+  if (navDataset) {
+    navDataset.addEventListener("click", () => {
+      markNavActive(navDataset);
+      setSidebarOpen(false);
+      activateKnnTab("dataset");
+      const sec = document.getElementById("sec-classification");
+      if (sec) sec.scrollIntoView({ behavior: "smooth", block: "center" });
+      showUiToast("Panel Tambah ke Dataset dibuka");
+    });
+  }
+
+  const btnJumpDetail = document.getElementById("btn-jump-detail");
+  if (btnJumpDetail) {
+    btnJumpDetail.addEventListener("click", () => {
+      const sec = document.getElementById("sec-classification");
+      if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  // Visual Domain Selector inside Feature Explorer (Color / Morphology / Texture / All)
   const domainBtns = document.querySelectorAll("#visual-domain-selector .domain-pill");
   const visualGrid = document.getElementById("feat-view-visual");
   const domainPanels = document.querySelectorAll("#feat-view-visual [data-domain-panel]");
@@ -1228,7 +1294,6 @@ function initRedesignUI() {
       btn.classList.add("active");
       const sel = btn.dataset.domain;
 
-      // Ensure Visualisasi tab is visible when clicking a visual domain pill
       const visualTab = document.querySelector('.feat-tab[data-tab="visual"]');
       if (visualTab && !visualTab.classList.contains("active")) {
         visualTab.click();
@@ -1244,7 +1309,15 @@ function initRedesignUI() {
     });
   });
 
-  // Drag-and-drop visual highlight on input preview pane
+  // Hide visual domain bar when user switches to Matrix 49-D tab
+  const domainBar = document.getElementById("visual-domain-selector");
+  document.querySelectorAll(".feat-tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      if (domainBar) domainBar.classList.toggle("hidden", tab.dataset.tab !== "visual");
+    });
+  });
+
+  // Drag-and-drop visual highlight on input drop zone
   const dropArea = document.getElementById("input-drop-area");
   if (dropArea) {
     let dragCounter = 0;
